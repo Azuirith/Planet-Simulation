@@ -5,6 +5,7 @@
 
 #include "RenderWindow.hpp"
 #include "Sprite.hpp"
+#include "Vector.hpp"
 
 #define WINDOW_COLOR_R 0
 #define WINDOW_COLOR_G 0
@@ -13,58 +14,46 @@
 
 #define TEXTURE_RESOLUTION 128
 
-RenderWindow::RenderWindow(const char* title, int width, int height)
-{
+RenderWindow::RenderWindow(const char* title, Vector size) {
     window = SDL_CreateWindow(title, 
                               SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
-                              width, height,
+                              size.x, size.y,
                               0);
 
-    if (window == nullptr)
+    if (window == nullptr) {
         std::cout << "Error: Window has failed to init. Error message: " << SDL_GetError() << std::endl;
+    }
 
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-    if (renderer == nullptr)
+    if (renderer == nullptr) {
         std::cout << "Error: Renderer has failed to init. Error message: " << SDL_GetError() << std::endl;
+    }
 
     SDL_SetRenderDrawColor(renderer, WINDOW_COLOR_R, WINDOW_COLOR_G, WINDOW_COLOR_B, WINDOW_COLOR_A);
 }
 
-SDL_Texture* RenderWindow::LoadTexture(const char* filePath)
-{
+SDL_Texture* RenderWindow::LoadTexture(const char* filePath) {
     SDL_Texture* texture;
     texture = IMG_LoadTexture(renderer, filePath);
 
-    if (texture == nullptr)
+    if (texture == nullptr) {
         std::cout << "Error: LoadTexture has failed. Error message: " << SDL_GetError() << std::endl;
+    }
 
     return texture;
 }
 
-SDL_Texture* RenderWindow::CreateTextureFromSurface(SDL_Surface* surface)
-{
-    SDL_Texture* texture;
-    texture = SDL_CreateTextureFromSurface(renderer, surface);
-
-    if (texture == nullptr)
-        std::cout << "Error: CreateTextureFromSurface has failed. Error message: " << SDL_GetError() << std::endl;
-
-    return texture;
-}
-
-void RenderWindow::Clear()
-{
+void RenderWindow::Clear() {
     SDL_RenderClear(renderer);
 }
 
-void RenderWindow::Draw(Sprite& sprite, bool isText)
-{
+void RenderWindow::Draw(Sprite& sprite, bool isText) {
     SDL_Rect destination;
-    destination.x = sprite.x;
-    destination.y = sprite.y;
-    destination.w = sprite.width;
-    destination.h = sprite.height; 
+    destination.x = sprite.position.x;
+    destination.y = sprite.position.y;
+    destination.w = sprite.size.x;
+    destination.h = sprite.size.y; 
 
     // Done because text does not have the same resoultion as other sprites
     if (isText)
@@ -82,7 +71,6 @@ void RenderWindow::Draw(Sprite& sprite, bool isText)
     SDL_RenderCopy(renderer, sprite.texture, &source, &destination);
 }
 
-void RenderWindow::Update()
-{
+void RenderWindow::Update() {
     SDL_RenderPresent(renderer);
 }

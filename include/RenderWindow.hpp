@@ -2,13 +2,11 @@
 
 #include "Sprite.hpp"
 
-class RenderWindow
-{
+class RenderWindow {
   public: 
-    RenderWindow(const char* title, int width, int height);
+    RenderWindow(const char* title, Vector size);
 
     SDL_Texture* LoadTexture(const char* filePath);
-    SDL_Texture* CreateTextureFromSurface(SDL_Surface* surface);
 
     void Clear();
     void Draw(Sprite& sprite, bool isText);

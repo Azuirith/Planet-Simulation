@@ -1,10 +1,12 @@
 #include <iostream>
+#include <math.h>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 
 #include "RenderWindow.hpp"
+#include "Planet.hpp"
 #include "Sprite.hpp"
 
 #define WINDOW_WIDTH 900
@@ -26,12 +28,17 @@ int main(int argc, char* argv[]) {
         std::cout << "Error: TTF_Init has failed. Error message: " << SDL_GetError() << std::endl;
     }
 
-    RenderWindow window("Planet Simulation", WINDOW_WIDTH, WINDOW_HEIGHT);
+    RenderWindow window("Planet Simulation", Vector(WINDOW_WIDTH, WINDOW_HEIGHT));
 
     float lastTime = 0.f, currentTime;
     float deltaTime = 0.f;
 
     bool gameRunning = true;
+
+    Planet mars(Vector(0, WINDOW_HEIGHT / 2), 1000.f, 64.f);
+    Sprite marsSprite = Sprite(Vector(0, 0), Vector(mars.GetRadius(), mars.GetRadius()) * 2);
+    marsSprite.texture = window.LoadTexture("assets/planets/mars.png");
+    mars.SetSprite(marsSprite);
 
     SDL_Event event;
     while (gameRunning) {
@@ -49,6 +56,11 @@ int main(int argc, char* argv[]) {
         if (deltaTime >= FPS)
         {   
             window.Clear();
+
+            mars.ApplyForce(Vector(1000.f, 0.f));
+            mars.Update(deltaTime);
+            window.Draw(mars.GetSprite(), false);
+
             window.Update();
 
             // TODO: Figure out how to properly do deltaTime like where it can overflow instead of getting

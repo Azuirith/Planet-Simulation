@@ -2,15 +2,14 @@
 
 #include <SDL2/SDL.h>
 
-struct Sprite
-{
+#include "Vector.hpp"
+
+struct Sprite {
     Sprite();
-    Sprite(float x, float y, int width, int height);
+    Sprite(Vector position, Vector size);
 
     SDL_Texture* texture;
 
-    float x; 
-    float y;
-    int width;
-    int height;
+    Vector position;
+    Vector size;
 };
